@@ -58,7 +58,7 @@ class Dog extends Animal {
   say() { return '왈왈' }
 }
 
-let animals: ANimal[] = [new Cat('애옹이', 2), new Dog('댕댕이', 3)]
+let animals: Animal[] = [new Cat('애옹이', 2), new Dog('댕댕이', 3)]
 let sounds = animals.map(a => a.say()) //['애옹','왈왈']
 ```
 
