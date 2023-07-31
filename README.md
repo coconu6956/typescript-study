@@ -103,5 +103,38 @@ tsconfig.json 파일에서 include 항목이 있음.
 > npm run build
 ```
 
+# 모듈 이해하기
+
+타입스크립트에서는 index.ts와 같은 소스 파일을 모듈이라고 함.
+index.ts, makePerson.ts 두 개의 소스 파일을 만들었으므로 모듈을 두 개 만든 것
+- 모듈화 :  코드 관리와 유지, 보수를 편리하게 하려고 모듈마다 고유한 기능을 규현하는 방식으로 소스코드를 분할하는 것
+
+# import 키워드
+export 키워드로 내보낸 심벌을 받아서 사용하려면 import 키워드로 해당 심벌을 불러와야 함. 
+```javascript
+import { 심벌 목록 } from  '파일의 상대 경로'
+```
+# import * as 구문
+```javascript
+import * as 심벌 from '파일 상대 경로'
+```
+
+# export default 키워드
+
+export default 키워드는 한 모듈이 내보내는 기능 중 오직 한 개에만 붙일 수 있음.
+import 문으로 불러올 때 중괄호{} 없이 사용 가능.
+
+# 외부 패키지를 사용할 떄 import 문
+```shell
+> npm i -S chance ramda
+> npm i -D @types/chance @types/ramda
+```
+
+- chance : 가짜 데이터를 만들어 주는 데 사용
+- ramda : 함수형 유틸리티 패키지
+
+
+
+
 
 
