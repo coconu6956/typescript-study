@@ -28,7 +28,8 @@
 # 프로젝트 생성자 관점에서 패키지 설치하기
 package.json 파일을 만들었으면 프로젝트 구현에 필요한 다양한 오픈소스 패키지를 npm install 또는 간단히 npm i 명령으로 설치.
 
-- 패키지 설치 명령 옵션
+> 패키지 설치 명령 옵션
+
 | npm i 옵션 | 의미 | 단축 명령 |
 | --save | 프로젝트를 실행할 때 필요한 패키지로 설치. 패키지 정보가 package.json 파일의 'dependencies' 항목에 등록 | -S |
 | --save-dev | 프로젝트를 개발할 때만 필요한 패키지로 설치. 패키지 정보가 package.json파일의 'devDependencies' 항목에 등록 | -D |
@@ -133,6 +134,49 @@ import 문으로 불러올 때 중괄호{} 없이 사용 가능.
 - chance : 가짜 데이터를 만들어 주는 데 사용
 - ramda : 함수형 유틸리티 패키지
 
+# tsconfig.json 살펴보기
+```shell
+> tsc --help
+```
+
+- compilerOptions : tsc 명력 형식에서 옵션을 나타냄
+- include : 대상 파일 목록을 나타냄. 컴파일 대상
+
+**키:키값 **
+
+## module 키
+
+타입스크립트 소스코드가 컴파일된 자바스크립트 코드는 웹 브라우저와 node.js 양쪽에서 동작해야함.
+그러나 물리적으로 동작 방식이 다름 
+- 웹 브라우저 : amd (asynchronous module definition)
+- node.js : commonjs
+
+## moduleResolution 키
+module 키값이 commonjs이면 moduleResolution 키값은 항상 node로 설정. 
+반면, module 키값이 amd이면 moduleResolution 키값은 classic으로 설정.
+
+## target 
+트랜스파일할 대상 자바스크립트의 버전 설정
+최신 버전의 node.js를 사용한다면 es6 설정
+
+## baseUrl, outDir
+트랜스파일된 자바스크립트 파일을 저장하는 디렉터리 설정
+
+## paths
+소스파일의 import문에서 from부분을 해석할 떄 찾아야 하는 디렉터리를 설정. 
+import 문이 찾아야 하는 소스가 외부 패키지이면 node_modules 디렉터리에서 찾아야 하므로 키값에 node_modules/* 포함
+
+## esModuleInterop
+오픈소스 자바스크립트 라이브러리 중 웹 브라우저에서 동작하나든 가정으로 만들어진 것이 있는데, 이들은 commonjs 방식으로 동작하는 타입스크립트 코드에 혼란을 줄 수 있음. chance가 AMD 방식을 전제로 해서 구현된 라이브러리. 따라서 chance 패키지가 동작하려면 esModuleInterop 키값은 반드시 true
+
+## sourceMap 
+true 이면 트랜스파일 디렉터리에는 .js 파일 이외에도 .js.map 파일이 만들어짐. 이 소스맵 파일은 변환된 자바스크립트 코드가 타입스크립트 코드의 어디에 해당하는지를 알려줌. 소스맵 파일은 주로 디버깅할 때 사용
+
+## downlevelIteration
+생성기 구문이 정상적으로 동작하여면 true로 설정
+
+## noImplicitAny
+false 로 설정시 타입을 지정하지 않더라고 문제로 인식하지 않음.
 
 
 
