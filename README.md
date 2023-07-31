@@ -130,8 +130,8 @@ let person:person = {name: "Jane"}
 ```
 
 ## (3)튜플
-튜플은 뮬리적으로는 배열과 같음.
-다만, 배열에 저장되는 아이템의 데이터 타입이 모두 같은면, 배열, 다르면 튜플
+튜플은 물리적으로는 배열과 같음.
+다만, 배열에 저장되는 아이템의 데이터 타입이 모두 같으면 배열, 다르면 튜플
 ```javascript
 let numberArray: number[ ] = [1, 2, 3] // 배열
 let tuple: [boolean, number, string] = [true, 1, 'Ok'] // 튜플
