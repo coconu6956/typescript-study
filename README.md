@@ -161,7 +161,95 @@ let ai: {
 } = {name: 'Jack', age: 32}
 ```
 
+# 객체와 클래스
 
+## 클래스 선언문
+
+```typescript
+class 클래스 이름 {
+  [private | protected | public] 속성이름[?]: 속성타입[...]
+}
+```
+
+```typescript
+class Person1 {
+  name: string
+  age?: number 
+}
+```
+
+## 접근 제한자
+
+클래스의 속성은 public, private, protect와 같은 접근 제한자를 이름 앞에 붙일 수 있음. 생략하면 public으로 간주.
+
+## 생성자
+constructor라는 이름의 생성자 포함.
+객체 초기화를 위해 선언.
+
+```typescript
+class Person2 {
+  constructor(public name: string, public age?: number) {}
+}
+
+let jack2: Person2 = new Person2('jack', 32)
+console.log(jack2)
+```
+
+## 인터페이스 구현
+
+클래스가 인터페이스를 구현할 때는 다음처럼 implements 키워드 사용
+
+```typescript
+class 클래스 이름 implements 인터페이스 이름 {
+
+}
+```
+인터페이스는 이러이러한 속성이 잇어야 한다는 규약에 불과할 뿐 물리적으로 해당 속성을 만들지 않는다. 
+따라서 클래스 몸통에는 반드시 인터페이스가 정의하고 있는 속성을 멤버 속성으로 포함해야함.
+```typescript
+interface IPerson4 {
+  name: string
+  age?: number
+}
+
+class Person4 implements IPerson4 {
+  name: string
+  age?: number
+}
+```
+
+## 추상 클래스 
+
+추상 클래스는 자신의 속성이나 메서트 앞에 abstract를 붙여 나를 상속하는 다른 클래스에서 이 속성이나 메서드를 구현하게 함.
+
+```typescript
+abstract class 클래스 이름 {
+  abstract 속성이름: 속성타입
+  abstract 메서드 이름() {}
+}
+
+abstract class AbstractPerson5 {
+  abstract name: string
+  constructor(public age?: number) {}
+}
+```
+abstract가 붙었으므로 new 연간자를 적용해 객체를 만들 수 없음.
+
+## 클래스 상속
+
+```typescript
+class 상속 클래스 extends 부모 클래스 { ...}
+```
+참고로 타입스크립트에서 부모 클래스의 생성자를 super키워드로 호출 가능.
+
+## static 속성
+정적 속성
+
+```typescript
+class 클래스 이름{
+  static 정적 속성 이름: 속성 타입
+}
+```
 
 
 
