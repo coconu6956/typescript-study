@@ -106,6 +106,60 @@ u = 1 // Type '1' is not assignable to type 'undefined'
 `${변수이름}`
 ```
 
+# 객체와 인터페이스
+
+object타입으로 선언된 변수는 number, boolean, string 값을 가질 수는 없지만, 다음처럼 속성 이름이 다른 객체를 모두 자유롭게 담을 수 있음.
+
+```typescript
+let o: object = {name: 'Jack', age: 32}
+o = {first: 1, second: 2}
+```
+
+object타입은 마치 객체를 대상으로 any타입터럼 동작.
+이렇게 동작하지 않게 하려는 목적으로 **인터페리스 구문** 고안
+
+## 인터페이스 선언문
+
+타입스크립트는 객체의 타입을 정의할 수 있게 interface라는 키워드 제공
+이너페이스는 객체의 타입을 정의하는 것이 목적. 
+
+```typescript
+interface 인터페이스 이름{
+  속성이름[?]: 속성타입[,...]
+}
+```
+
+```typescript
+interface IPerson{
+  name: string
+  age: number
+}
+```
+
+## 선택 속성 구문
+
+인터페이스를 설계할 때 어떤 속성은 반드시 있어야 하지만, 어떤 속성은 있어도 되고 없어도 되는 형태로 만들고 싶을 때가 있음.
+이러한 속성을 선택 속성(optional property)라 함.
+
+```typescript
+interface IPerson2 {
+  name: string  // 필수 속성
+  age: number   // 필수 속성
+  etc?: boolean // 선택 속성
+}
+```
+
+## 익명 인터페이스
+interface 키워드 사용하지 않고 이름도 없는 인터페이스를 만들 수 있음.
+이를 익명 인터페이스(anonymous interface)라 함.
+
+```typescript
+let ai: {
+  name: string
+  age: number
+  etc?: boolean
+} = {name: 'Jack', age: 32}
+```
 
 
 
