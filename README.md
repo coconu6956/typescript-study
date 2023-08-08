@@ -1,1 +1,641 @@
 # typescript-study
+
+# 04 함수와 메서드
+
+## 04-1 함수 선언문
+
+자바스크립트에서 함수 선언문
+```javascript
+function 함수이름(매개변수1, 매개변수2[, ...]) {
+
+}
+```
+
+타입스크립트에서 함수 선언문
+매개변수와 함수 반환값에 다입 주석을 붙이는 형태
+
+```typescript
+function 함수이름(매개변수1: 타입1, 매개변수2: 타입2[,...]): 반환값 타입 {
+}
+```
+```typescript
+function add(a: number, b: number): number {
+  return a + b;
+}
+```
+
+### 매개변수와 인수, 인자
+일반적으로 parameter는 매개변수라고 하고, argument는 인수 혹은 인자라고 함. 
+- 매개변수는 함수 선언문에서 함수 이름 뒤 괄호 안에 선언하는 변수
+- 인수는 함수를 호출할 때 전달하는 값
+```typescript
+// a,b는 매개변수
+function add(a: number, b: number): number {
+  return a + b;
+}
+
+let result = add(1, 2) //1, 2는 인수
+```
+
+## 매개변수와 반환값의 타입 주석 생략
+
+변수와 마찬가지로 함수 선언문에서 매개변수와 반환값 타입 주석 생략 가능.
+다마느 변수 때와 달리 함수의 매개변수 타입과 반환 타입을 생략하는 것은 바람직하지 못함. 타입이 생략되어 있으면 함수의 구현 의도를 알기 어렵고, 잘못 사용하기 쉬움.
+
+## void 타입
+
+값은 반환하지 않는 함수는 반환 타입이 void 임. void는 함수 반환 타입으로만 사용 가능.
+
+```typescript
+function printMe(name: string, age: number): void {
+  console.log(`name: ${name}, age: ${age}`)
+}
+```
+
+## 함수 시그니처
+
+함수의 타입을 함수 시그니처(function signature)라고 함.
+
+```typescript
+(매개변수1 타입, 매개변수2타입[,...]) => 반환값 타입
+```
+
+```typescript
+let printMe: (string, number) => void = function(name: string, age: number): void {}
+```
+()=> void 매개변수도 없고 반환값도 없는 함수 시그니처임.
+
+## type 키워드로 타입 별칭 만들기
+
+타입 별칭(type alias)
+
+```typescript
+type 새로운 타입 = 기존 타입
+```
+
+```typescript
+type stringNumberFunc = (string, number) => void
+
+let f: stringFunc = function(a: string, b: number): void {}
+let g: stringFunc = function(c: string, d: number): void {}
+
+```
+
+## undefined 관련 주의 사항
+
+다음은 undefined 타입을 고려하지 않은 예
+
+```typescript
+interface INameable {
+  name: string
+}
+
+function getName(o: INameable) {return o.name}
+
+let n = getName(undefined) // 오류 발생
+console.log(n)
+```
+
+고려한 예
+
+```typescript
+interface INameable {
+  name: string
+}
+
+function getName(o: INameable){
+  return o != undefined ? o.name : 'unknown name'
+}
+
+let n = getName(undefined)
+console.log(n)
+console.log(getName({name: 'jack'}))
+```
+
+```typescript
+interface IAgeable {
+  age?: number
+}
+function getAge(o: IAgeable){
+  return o != undefined && o.age ? o.age : 0
+}
+
+console.log(getAge(undefined))
+console.log(getAge(null))
+console.log(getAge({age: 32}))
+```
+
+## 선택적 매개변수(optional parameters)
+
+```typescript
+function fn(arg1: string, arg?: number): void {}
+```
+
+```typescript
+function fn(arg1: string, arg?: number) {console.log(`arg: ${arg}`)}
+
+fn('hello', 1)  // arg: 1
+fn('hello')     // arg: undefined
+```
+
+선택적 매개변수가 있는 함수의 시그니처는 다음처럼
+
+```typescript
+type OptionalArgFunc = (string, number?) => void
+```
+
+## 04-2 함수 표현식
+
+## 함수는 객체다
+
+자바스크립트는 함수형 언어 '스킴(scheme)'과 프로토타입(prototype)기반으로 객체지향 언어 '셀프(self)'를 모델로 만들어짐.
+
+- 자바스크립트는 객체지향 언어와 함수형 언어의 특징 모두 가짐.
+
+- 자바스크립트에서 함수는 Function 클래스의 인스턴스(instance)임.
+- 다음코드에서 add가 함수로서 동작
+```javascript
+let add = new Function('a', 'b', 'return a + b')
+let result = add(1, 2)
+console.log(result)
+```
+
+다음과 같은 형태로 구현 가능
+```javascript
+let add2 = function(a, b) { return a + b; } 
+console.log(add2(1, 2))
+```
+
+이처럼 함수 선언문에서 함수 이름을 제외한 function(a, b) { return a + b; } 와 같은 코드를 **함수표현식(function expression)**이라 함.
+
+## 일등 함수
+
+프로그래밍 언어가 일등 함수(first-class function) 기능을 제공하면 '함수형 프로그래밍 언어(functional programming language)'라고 함.
+자바스크립트와 타입스크립트는 일등 함수 기능이 있으므로 함수형 프로그래밍 언어임.
+- 일등 함수 : 함수와 변수를 구분하지 않는다는 의미.
+
+```typescript
+let f = function(a, b) {return a + b}
+f = function(a, b) {return a - b}
+```
+
+변수와 함수를 차별하지 않는다.
+
+## 표현식
+
+프로그래밍 언어세어 '표현식(expression)'이라는 용어는 리터럴(literal), 연산자(operator), 변수, 함수 호출(function call)등이 복합적으로 구성된 코드 형태를 의미.
+
+- 표현식은 항상 컴퍼일러에 의해 계산법(evaluation)이 적용되어 어떤 값이 됨.
+
+## 함수 표현식
+
+```typescript
+let f = function(a, b) {return a + b}
+```
+
+변수 f에 function(a, b) {return a + b}를 마치 값처럼 대입하는데, function(a, b) {return a + b} 부분을 함수 표현식이라고 함.
+
+## 계산법
+
+컴파일러는 표현식을 만나면 계산법(evalution)을 적용해 어떤 값을 만듬.
+
+- 조급한 계산법(eager evaluation) : 1 + 2
+- 느긋한 계산법(lazy evaluation) : function(a,b) {return a + b} a, b 값을 몰라 계산 보류.
+
+## 함수 호출 연산자
+
+어떤 변수가 함수 표현식을 담고 있다면, 변수 이름 뒤에 함수 호출 연산자(function call operator) **()**를 붙여서 호출 가능.
+
+```javascript
+let functionExpression = function(a, b) {return a + b}
+let value = functionExpression(1, 2)
+```
+
+## 익명 함수
+
+```typescript
+let value = (function(a, b){return a+b;})(1, 2)
+```
+
+## const 키워드와 함수 표현식
+
+함수 표현식을 담는 변수는 let보다 const 키워드로 선언하는 것이 바람직.
+let은 함수 내용이 바뀔 수 있음.
+
+# 04-3 화살표 함수와 표현식 문
+
+```javascript
+const 함수 이름 = (매개변수1: 타입, 매개변수2: 타입2[,...]):반환 타입 => 함수 몸통
+```
+
+```javascript
+const arrow1 = (a: number, b: number): number => {return a + b}
+const arrow2 = (a: number, b: number): number => a + b
+```
+
+중괄호 사용 여부에 따라 타입스크립트 문법이 동작하는 방식이 실행문(execution statement)방식과 표현식 문(expression statement)방식으로 달라짐.
+
+## 실행문과 표현식 문
+
+오래전부터 프로그래밍 언어는 실행문 지향 언어(execution oriented language)와 표현식지향 언어(expression oriented language)로 구분.
+
+ES5는 실행문 지향 언어이지만, ESNext, 타입스크립트는 실행문과 표현식 문을 동시에 지원.
+이런 언어를 '다중 패러다임 언어(multi-paradigm language)'라 함.
+
+프로그래밍 언어에서 실행문은 CPU에서 실행되는 코드 의미.
+실행문은 실행된 결과를 알려면 반드시 return 키워드를 사용해야 함.
+반면 표현식은 CPU에서 실행된 결과를 궅이 return 키워드를 사용하지 않아도 알려줌.
+
+대표적인 실행문
+```javascript
+let x
+x = 1
+```
+
+```javascript
+let x = 10
+if(x > 0)
+  x = 1
+```
+
+```javascript
+if(return x > 0)
+  x = 1
+```
+
+똑같이 CPU에서 실행되는 구문이더라도 x > 0 처럼 return 키워드 없이 결괏값을 반환하는 실행문이 필요
+이를 **표현식 문(expression statement)**라고 함.
+
+## 복합 실행문
+
+프로그래밍 언어에서 if와 같은 구문은 다음처럼 조건을 만족하면 단순히 한 줄의 실행문만을 실행하는 형태로 설계함.
+
+```javascript
+if (조건식)
+  실행문
+```
+이런 설계가 가능한 이유는 복합 실행문(compound statement)이라는 또 다른 형태를 함께 제공하기 때문. 대부분 언어에서 복합 실행문은 중괄호 {}를 사용해 다음처럼 사용.
+
+```javascript
+if(조건식){
+  실행문1
+  실행문2
+}
+```
+
+복합 실행문은 컴파일러로 하여금 여러 실행문을 한 개처럼 인식하게 함.
+따라서 컴파일러는 앞의 형태로 작성된 if문은 여전히 한 줄의 실행문으로 인식.
+
+## 함수 몸통과 복합 실행문
+
+function 키워드로 만드는 함수는 반드시 몸통을 중괄호{}로 감싸야 하는데, 여기서 중괄호는 앞서 설명한 복합 실행문을 의미. 따라서 함수 몸통은 다음처럼 여러 줄로 구현 가능.
+
+```javascript
+function f(){
+  let x =1, y =2
+  let result = x + y + 10
+}
+```
+
+## 표현식 문 스타일의 화살표 함수 구현
+
+```typescript
+const isGreater = (a: number, b: number): boolean => {
+  return a > b;
+}
+```
+앞서 function 스타일 함수 isGreater를 화살표 함수로 구현함.
+
+ESNext, 타입스크립트는 다음처럼 구현 가능.
+
+```typescript
+const isGreater = (a: number, b: number): boolean => a > b
+```
+## 표현식과 표현식 문의 차이
+
+```typescript
+let a =1, b = 0
+if(a > b) console.log('a is greater than b')
+const isGreater = (a: number, b: number): boolean => a > b
+```
+
+a > b 코드는 C언어에서 '표현식'이라고 했기 때문에 그 이후 만들어진 프로그래밍 언어들도 C언어와 같은 의미로 표현식이라고 생각함.
+따라서 C언어 관점에서 실행문의 일부일 뿐 그 자체가 실행문인 것은 아님.
+반면 표현식 지향 언어 관점에서 3행의 a>b 코드는 그 자체가 실행문임.
+
+결론적으로 '표현식'이란 용어는 두 가지 형태로 사용되는데, 이 둘을 구분하고자 표현식과 표현식 문으로 구분한 것.
+
+## 실행문을 민드는 세미콜론
+
+ESNext, 타입스크립트 세미콜론 생략 가능.
+다만, 타입스크립트에서 관습적으로 표현식 문에는 세미콜론 붙이지 않음.
+
+# 04-4 일등 함수 살펴보기
+
+## 콜백 함수
+
+일등 함수(first-class function)는 프로그래밍 언어가 제공하는 기능임.
+일등 함수 기능을 제공하는 언어에서 '함수 표현식'이라는 일종의 값임.
+따라서 변수에 담을 수 있음. 이 말은 함수 표현식을 매개변수로 받을 수 있다.
+
+이처험 매개변수 형태로 동작하는 함수를 콜백함수라 함.
+
+```typescript
+const f = (callback: () => void): void => callback()
+```
+
+```typescript
+export const init = (callback: () => void): void => {
+  console.log(`default initialization finished.`)
+  callback()
+  console.log(`all initailzation finished.`)
+}
+```
+
+```typescript
+import {init} from './init'
+init(()=> console.log(`custom initialization finished.`))
+```
+## 중첩 함수
+
+```typescript
+const calc = (value: number, cb: (number)=> void): void => {
+  let add = (a, b) => a + b
+  function multiply(a, b) {return a * b}
+
+  let result = multiply(add(1, 2), value)
+  cb(result)
+}
+
+calc(30, (result: number) => console.log(`result is ${result}`))
+```
+
+## 고차 함수와 클로저, 그리고 부분 함수
+
+고차 함수(high-order function) : 또 다른 함수를 반환하는 함수
+
+```typescript
+const add1 = (a:number, b:number):number => a + b
+const add2 = (a:number): (number) => number => (b: number): number => a + b // 고차 함수
+```
+
+```typescript
+const add = (a:number): (number) => number => (b: number): number => a + b
+const result = add(1)(2)
+console.log(result)
+```
+
+```typescript
+type NumberToNumberFunc = (number) => number
+```
+
+NumberToNumberFunc 타입 정의
+
+```typescript
+export const add = (a: number): NumberToNumberFunc => {
+  // NumberToNumberFunc 타입의 함수 반환
+}
+```
+
+```typescript
+import { NumberToNumberFunc } from './add'
+
+let fn: NumberToNumberFunc = add(1)
+
+let result = fn(2)
+console.log(result)
+console.log(add(1)(2))
+```
+
+fn은 단순히 add(1)을 저장하는 임시변수의 역할만 함.
+따라서 fn과 같은 임시 변수를 사용하지 않는다면 7행과 같은 구문이 됨.
+2차 고차 함수인 add는 add(1)(2)처럼 함수 호출 연산자를 두 개 사용해야만 함수가 아닌 값을 얻을 수 있음.
+
+```typescript
+const multiply = a => b => c => a * b * c 
+```
+
+3차 고차 함수인 multiply에 함수 호출 연산자를 하나나 두 개만 붙여서 multiply(1)이나 multiply(1)(2)처럼 사용하면 아직 값이 아닌 함수임. 이것을 '부분 애플리케이션(partial application)' 혹은 '부분 적용 함수(partially applied function)'라고 함.
+
+# 04-5 함수 구현 기법
+
+## 매개변수 기본값 지정하기
+ 함수 호출 시 인수를 전달하지 않더라고 매개변수에 어떤 값을 설정하고 싶다면 매개변수의 기본값을 지정할 수 있음. 이를 **디폴트 매개변수(dafault parameter)**라고 함
+
+ ```typescript
+ (매개변수: 타입 = 매개변수 기본값)
+ ```
+
+```typescript
+export type Person = { name: string, age: number }
+
+export const makePerson = (name: string, age: number = 10): Person => {
+  const person = {name: name, age: age}
+  return person
+}
+
+console.log(makePerson('Jack'))
+console.log(makePerson('Jane', 33))
+```
+
+## 객체 생성 시 값 부분을 생략할 수 있는 타입스크립트 구문
+
+타입스크립트는 매개변수의 이름과 똑같은 이름의 속성을 가진 객체를 만들 수 있음.
+이때 속성값 부분을 생략할 수 있는 단축 구문(shorthand)제공
+
+```typescript
+const makePerson = (name: string, age: number) => {
+  const person = {name, age} // {name: name, age: age}의 단축
+}
+```
+
+
+```typescript
+export type Person = { name: string, age: number }
+
+export const makePerson = (name: string, age: number = 10): Person => {
+  const person = {name, age}
+  return person
+}
+
+console.log(makePerson('Jack'))
+console.log(makePerson('Jane', 33))
+```
+
+## 객체를 반환하는 화살표 함수 만들기
+
+```typescript
+export const makePerson = (name: string, age: number = 10): Person => {name, age}
+```
+
+이렇게 구현하면 컴파일러는 중괄호{}를 객체가 아닌 복합 실행문으로 해석함.
+따라서 컴파일러가 {}를 객체로 해석하게 하려면 다음처럼 객체를 소괄호로 감싸주어야 함.
+
+
+```typescript
+export const makePerson = (name: string, age: number = 10): Person => ({name, age})
+```
+
+```typescript
+export type Person = { name: string, age: number }
+
+export const makePerson = (name: string, age: number = 10): Person => ({name, age})
+
+console.log(makePerson('Jack'))
+console.log(makePerson('Jane', 33))
+```
+
+## 매개변수에 비구조롸 할당문 사용하기
+
+함수의 매개변수도 변수의 일종으므로 비구조화 할당문을 적용할 수 있음
+
+```typescript
+export type Person = { name: string, age: number }
+
+const printPeron = ({name, age}: Person): void => console.log(`name: ${name}, age: ${age}`)
+
+printPerson({name: 'Jack', age: 10})
+```
+## 색인 키와 값으로 객체 만들기
+
+ESNext
+```typescript
+const makeObject = (key, value) => ({[key]: value})
+```
+
+객체의 속성 이름을 변수로 만들려고 할 떄 사용.
+쯕, [key]부분이 'name'이면 {name: value}형태, 'firstName'이면 {firstName: value}형태의 객체를 생성.
+
+```javascript
+const makeObject = (key, value) => ({[key]: value})
+console.log(makeObject('name', 'Jack'))       // {name: 'Jack'}
+console.log(makeObject('firstName', 'Jane'))  // {firstName: 'Jane'}
+```
+
+타입스크립트에서는 {[key]: value}형태의 타입을 '색인 가능 타입(indexable type)'라고 함.
+
+```typescript
+type KeyType = {
+  [key: string]: string
+}
+```
+
+```typescript
+export type KeyValueType = {
+  [key: string]: string
+}
+
+export const makeObject = (key: string, value: string): KeyValueType => ({[key]: value})
+
+console.log('name', 'Jack')
+console.log(makeObject('firstName', 'Jane'))
+```
+
+# 04-6 클래스 메서드
+
+# function 함수와 this 키워드
+
+타입스크립트의 function키워드로 만든 함수는 Function이란 클래스의 인스턴스, 즉 함수는 객체라 함.
+객체지향 언어에서 인스턴스는 this키워드를 사용할 수 있음.
+반면 화살표 함수에는 this키워드를 사용할 수 없음.
+
+## 메서드란?
+
+타입스크립트에서 메서드(method)는 function으로 만든 함수 표현식을 담고 있는 속성.
+
+```typescript
+export class A {
+  value: number = 1
+  method: () => void = function(): void {
+    console.log(`value: ${this.value}`)
+  }
+}
+```
+
+클래스 A는 value, method라는 두 개의 속성을 가짐.
+value에는 1이라는 값 설정.
+method는 () => void 타입의 함수 표현식을 설정.
+메서드 구현 내용 중 특이한 부분은 **this.value**임.
+
+```typescript
+import { A } from "./A";
+
+let a:A = new A
+a.method()
+```
+
+## 클래스 메서드 구문
+
+```typescript
+export class B {
+  constructor(public value: number = 1){}
+  method(): void {
+    console.log(`value: ${this.value}`)
+  }
+}
+```
+
+```typescript
+import { B } from "./B";
+
+let b: B = new B(2)
+b.method()
+```
+
+## 정적 메서드
+
+클래스의 속성은 static 수정자를 속성 앞에 붙여서 정적으로 만들 수 있음.
+메서드 또한 속성이므로 이름 앞에 static 수정자를 붙여 정적 메서드를 만들 수 있음.
+
+```typescript
+// 호출
+클래스이름.정적메서드()
+```
+
+```typescript
+export class C {
+  static whoAreYou(): string {
+    return `I'm class C`
+  }
+}
+
+export class D {
+  static whoAreYou(): string {
+    return `I'm class D`
+  }
+}
+
+console.log(C.whoAreYou())
+console.log(D.whoAreYou())
+```
+
+## 메서드 체인
+
+jquery
+```javascript
+$("#p1").css("color", "red").slideUp(2000).slideDown(2000)
+```
+
+타입스크립트로 메서드 체인을 구현하려면 항상 this를 반환하게 함.
+
+```typescript
+export class calculator {
+  constructor(public value: number = 0) {}
+  add(value: number) {
+    this.value += value
+    return this
+  }
+  multiply(value: number){
+    this.value *= value
+    return this
+  }
+}
+```
+
+```typescript
+import { Calculator } from "./method-chain";
+
+let calc = new Calculator();
+let result = calc.add(1).add(2).multiply(3).multiply(4).value
+console.log(result)
+```
